@@ -25,10 +25,10 @@
         exit(EXIT_FAILURE);                     \
     }
 
-// #define LOG(msg) do {           \
-//         printf("%s\n", msg);    \
-//     } while(0)
-#define LOG(msg)
+#define LOG(msg) do {           \
+        printf("%s\n", msg);    \
+    } while(0)
+// #define LOG(msg)
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
@@ -98,7 +98,7 @@ void socket_thread(void* callbackData, unsigned char** image, int* out_width, in
                     const char* data_ptr = packet.payload + index;
                     ssize_t bytes_sent = send(client_fd, data_ptr, chunk_size, 0);
 
-                    LOG("DEBUG: sent "); //TODO: print number
+                    LOG("DEBUG: sent pose");
                     STATUS_CHECK(bytes_sent == -1, "DEBUG: failed to send everything");
                     index += bytes_sent;
                 }
@@ -108,6 +108,14 @@ void socket_thread(void* callbackData, unsigned char** image, int* out_width, in
         else if (packet.header.command == CS_REQ_IMG)
         {
             memcpy(imagePayload, packet.payload, packet.header.payload_size);
+        }
+        else if (packet.header.command == CS_GRANT_TOKEN)
+        {
+            printf("Token granted\n");
+        }
+        else if (packet.header.command == CS_DEFINE_STEP)
+        {
+            printf("Step Defined: %d\n", *((int*)packet.payload));
         }
     }
 }
