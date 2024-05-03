@@ -105,9 +105,10 @@ void socket_thread(void* callbackData, unsigned char** image, int* out_width, in
             }
 
         }
-        else if (packet.header.command == CS_REQ_IMG)
+        else if (packet.header.command == CS_RSP_IMG)
         {
             memcpy(imagePayload, packet.payload, packet.header.payload_size);
+            free(packet.payload);
         }
         else if (packet.header.command == CS_GRANT_TOKEN)
         {
